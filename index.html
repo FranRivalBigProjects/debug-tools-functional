@@ -1,116 +1,977 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
-    <title>3D Debug Tools – Mesh, Textures & Rendering Issue Detection</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
+<meta name="robots" content="index, follow">
 
-    <meta name="description" content="Debug 3D assets and rendering issues with tools for broken meshes, missing textures, heavy models and slow rendering performance.">
+<title>Debug Texture Generator – Free UV Grid, Checker &amp; Test Texture Tool</title>
 
-    <meta name="keywords" content="3d mesh error detector, missing textures fix tool, model performance analyzer 3d, render slow debug tool, texture not loading issue 3d engine">
+<meta name="description" content="Free debug texture generator. Create checker board, UV grid, normal map test, color ramp, mip level indicator, and custom debug textures online. Export as PNG for Unity, Unreal Engine, Blender, and any 3D app. No install required.">
 
-    <link rel="canonical" href="/debug-tools-functional/">
+<meta name="keywords" content="debug texture, debug texture generator, uv debug texture, checker texture, uv grid texture, debug texture unity, debug texture unreal, test texture 3d, uv checker board, debug normal map texture">
+
+<link rel="canonical" href="https://franrivalbigprojects.github.io/debug-tools-functional/">
+
+<meta property="og:title" content="Debug Texture Generator – Free UV Grid, Checker and Test Textures">
+<meta property="og:description" content="Generate checker board, UV grid, normal map test, and color ramp debug textures online. Export PNG for Unity, Unreal, Blender. Free, no install.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #060408;
+  --surface: #0c080f;
+  --surface2: #120e18;
+  --border: #1a1224;
+  --border2: #241a34;
+  --tex: #a855f7;
+  --tex-dim: rgba(168,85,247,0.12);
+  --tex-dim2: rgba(168,85,247,0.05);
+  --tex-glow: rgba(168,85,247,0.2);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.1);
+  --green-dim2: rgba(34,197,94,0.05);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.08);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.08);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.08);
+  --text: #c0b4e0;
+  --text-muted: #403060;
+  --text-dim: #12082a;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --r: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+}
+
+header {
+  border-bottom: 1px solid var(--border2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,4,8,0.97);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-pill {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tex);
+  background: var(--tex-dim2);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 3px;
+  padding: 3px 9px;
+}
+
+.logo-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.logo-text strong { color: var(--tex); font-weight: 500; }
+
+.wrapper {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HERO */
+.hero {
+  padding: 48px 0 30px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 24px;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tex);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+h1 {
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 em { font-style: normal; color: var(--tex); }
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 620px;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.hero-sub strong { color: var(--text); }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.pill-t  { color: var(--tex); background: var(--tex-dim2); border-color: rgba(168,85,247,0.3); }
+.pill-dim { color: var(--text-muted); border-color: var(--border2); }
+
+/* TOOL */
+.tool-shell {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: 0 0 40px rgba(168,85,247,0.04);
+}
+
+.tool-topbar {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border2);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topbar-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* TYPE SELECTOR */
+.type-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg);
+}
+
+.type-btn {
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+
+.type-btn:hover { border-color: var(--tex); color: var(--text); }
+.type-btn.active { border-color: var(--tex); background: var(--tex-dim2); color: var(--tex); }
+
+/* CONTROLS + PREVIEW */
+.tool-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 340px;
+}
+
+.controls-col {
+  border-right: 1px solid var(--border2);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--bg);
+}
+
+.ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+
+.ctrl-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.ctrl-row { display: flex; gap: 6px; align-items: center; }
+
+.tex-input, .tex-select {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 6px 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  width: 100%;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+
+.tex-input:focus, .tex-select:focus {
+  outline: none;
+  border-color: rgba(168,85,247,0.35);
+}
+
+.tex-select option { background: #120e18; }
+
+input[type="range"].tex-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  background: var(--border2);
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"].tex-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--tex);
+  cursor: pointer;
+}
+
+.color-pair { display: flex; gap: 6px; }
+
+input[type="color"] {
+  width: 36px;
+  height: 28px;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 1px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.btn-gen {
+  padding: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--tex);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s;
+  box-shadow: 0 0 14px var(--tex-glow);
+  margin-top: 4px;
+}
+
+.btn-gen:hover { opacity: 0.87; }
+
+.btn-dl {
+  padding: 9px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--green-dim2);
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  text-align: center;
+}
+
+.btn-dl:hover { opacity: 0.75; }
+
+.preview-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #111;
+  position: relative;
+}
+
+#texCanvas {
+  max-width: 100%;
+  max-height: 340px;
+  image-rendering: pixelated;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+}
+
+.preview-info {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+}
+
+/* SECTION */
+hr.divider { border: none; border-top: 1px solid var(--border2); margin: 50px 0; }
+.content-section { margin-bottom: 50px; }
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sec-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--tex);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.sec-rule { flex: 1; height: 1px; background: var(--border2); }
+
+p { font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; max-width: 820px; }
+p strong { color: var(--text); }
+
+code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--surface2);
+  color: var(--tex);
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+}
+
+.texture-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tex-type-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  transition: border-color 0.15s;
+}
+
+.tex-type-card:hover { border-color: rgba(168,85,247,0.25); }
+
+.ttc-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.ttc-desc { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+
+.dense-block {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 22px;
+  margin-top: 14px;
+}
+
+.dense-block p { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border2); max-width: none; }
+.dense-block p:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.faq-list {
+  margin-top: 14px;
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.faq-item { border-bottom: 1px solid var(--border2); }
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: none;
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  font-family: var(--sans);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s;
+}
+
+.faq-q:hover { background: var(--tex-dim2); }
+.faq-arrow { font-family: var(--mono); font-size: 11px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  display: none;
+  padding: 0 18px 13px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--border2);
+  background: var(--bg);
+}
+
+.faq-item.open .faq-a { display: block; }
+.faq-a code { color: var(--tex); background: var(--tex-dim2); }
+
+.subtools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stl {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s;
+}
+
+.stl:hover { border-color: rgba(168,85,247,0.3); }
+.stl-eye  { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.stl-name { font-family: var(--mono); font-size: 12px; color: var(--tex); font-weight: 500; }
+
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 50px; }
+
+.tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 4px 12px;
+  cursor: default;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tag:hover { color: var(--tex); border-color: rgba(168,85,247,0.3); }
+
+footer { border-top: 1px solid var(--border2); padding: 20px 0; position: relative; z-index: 1; }
+
+.footer-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+footer p { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0; }
+
+@media (max-width: 640px) {
+  .tool-body { grid-template-columns: 1fr; }
+  .controls-col { border-right: none; border-bottom: 1px solid var(--border2); }
+}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Debug Texture Generator","applicationCategory":"DesignApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free debug texture generator. Create checker board, UV grid, normal map test, color ramp, mip level indicator, and custom debug textures for Unity, Unreal Engine, Blender, and any 3D application. Export as PNG. No install required.","featureList":"Checker board texture, UV grid texture, normal map test texture, color ramp, mip level indicator, custom colors, adjustable tile count, PNG export"}
+</script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a debug texture?","acceptedAnswer":{"@type":"Answer","text":"A debug texture is a test image applied to 3D meshes to diagnose UV mapping, tiling, stretching, and texture coordinate issues. Common types: checker board (detect tiling and scale issues), UV grid (verify UV layout and detect distortion), normal map test (verify tangent space normal mapping), and color ramp (verify texture coordinate interpolation). Debug textures are used in Unity, Unreal Engine, Blender, Maya, and any 3D workflow."}},{"@type":"Question","name":"How do I use a debug texture in Unity?","acceptedAnswer":{"@type":"Answer","text":"In Unity: generate and download a debug texture from this tool, drag it into your Assets folder, create a new Material, assign the debug texture to the Albedo slot, and apply the material to your mesh. A checker board texture will immediately reveal UV tiling issues (irregular squares = UV distortion), UV seams, and incorrect scale. For Unreal Engine: import the PNG, create a Material, connect the texture to the Base Color pin, and apply to the mesh."}},{"@type":"Question","name":"What debug texture should I use to check UV mapping?","acceptedAnswer":{"@type":"Answer","text":"Use a UV Grid texture to verify UV layout — it contains numbered cells and directional indicators that make UV distortion, flipping, and seams immediately visible. Use a Checker Board for quick scale and tiling checks. Use a Color Ramp (gradient) to verify texture coordinate interpolation direction. For normal map issues, use the Normal Map Test texture which shows how surface normals respond to the test pattern under a directional light."}}]}
+</script>
+
 </head>
 
 <body>
-
 <header>
-    <h1>3D Debug Tools – Detect & Fix Asset and Rendering Issues</h1>
-    <p>
-        A focused collection of <strong>3D debugging tools</strong> designed to help developers and artists
-        identify and fix <strong>mesh errors, texture issues, and rendering performance problems</strong>
-        across game engines and 3D workflows.
-    </p>
+  <div class="header-inner">
+    <span class="logo-pill">TEX</span>
+    <span class="logo-text"><strong>debug</strong>-texture-generator</span>
+  </div>
 </header>
 
-<section>
-    <h2>🧩 Mesh & Model Debugging</h2>
-    <ul>
-        <li><a href="/debug-tools-functional/broken-mesh-detector/">Broken Mesh Detector</a> – Identify geometry issues and corrupt meshes</li>
-        <li><a href="/debug-tools-functional/model-heavy-analyzer/">Model Heavy Analyzer</a> – Detect high-poly models affecting performance</li>
-    </ul>
-</section>
+<div class="wrapper">
 
-<section>
-    <h2>🖼️ Texture Debugging</h2>
-    <ul>
-        <li><a href="/debug-tools-functional/missing-textures-finder/">Missing Textures Finder</a> – Locate missing or broken texture references</li>
-        <li><a href="/debug-tools-functional/texture-not-loading-debugger/">Texture Not Loading Debugger</a> – Diagnose texture loading issues</li>
-    </ul>
-</section>
-
-<section>
-    <h2>⚡ Rendering Performance</h2>
-    <ul>
-        <li><a href="/debug-tools-functional/render-slow-checker/">Render Slow Checker</a> – Analyze rendering bottlenecks</li>
-    </ul>
-</section>
-
-<section>
-    <h2>📊 What Do These Tools Help You Fix?</h2>
-    <p>
-        These <strong>3D debugging tools</strong> help you:
+  <section class="hero">
+    <p class="hero-eyebrow">// 3D Debug Tool</p>
+    <h1>Free <em>Debug Texture</em> Generator —<br>UV Grid, Checker &amp; Test Textures</h1>
+    <p class="hero-sub">
+      Generate <strong>checker board, UV grid, normal map test, color ramp, and mip level</strong> debug textures. Export as PNG for Unity, Unreal Engine, Blender, and any 3D app.
     </p>
-    <ul>
-        <li>Detect broken or corrupted meshes</li>
-        <li>Fix missing or incorrectly loaded textures</li>
-        <li>Identify performance-heavy models</li>
-        <li>Optimize rendering performance</li>
-        <li>Debug asset pipeline issues</li>
-    </ul>
-</section>
+    <div class="pill-row">
+      <span class="pill pill-t">Checker Board</span>
+      <span class="pill pill-t">UV Grid</span>
+      <span class="pill pill-dim">Normal Map Test</span>
+      <span class="pill pill-dim">Color Ramp</span>
+      <span class="pill pill-dim">Export PNG</span>
+    </div>
+  </section>
 
-<section>
-    <h2>🚀 Long-Tail Keywords & Search Intent</h2>
-    <ul>
-        <li>fix broken mesh 3d model blender unreal unity</li>
-        <li>missing textures in game engine how to debug</li>
-        <li>why textures not loading 3d model fix</li>
-        <li>optimize heavy 3d models performance game dev</li>
-        <li>render slow issue debugging 3d scene</li>
-        <li>3d asset pipeline debugging tools</li>
-    </ul>
-</section>
+  <!-- TEXTURE GENERATOR TOOL -->
 
-<section>
-    <h2>🧠 Why 3D Debugging Matters</h2>
-    <p>
-        3D asset issues can break rendering pipelines and impact performance.
-        These tools help ensure assets are optimized and compatible across engines and workflows.
-    </p>
-</section>
+  <div class="tool-shell">
+    <div class="tool-topbar">
+      <span class="topbar-label">// Debug Texture Generator</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);">Select type · Adjust settings · Export PNG</span>
+    </div>
 
-<section>
-    <h2>❓ Frequently Asked Questions</h2>
 
-    <h3>Why are my textures missing?</h3>
-    <p>
-        Missing textures are often caused by incorrect file paths or unsupported formats.
-    </p>
+<div class="type-row">
+  <button class="type-btn active" id="tb-checker" onclick="setType('checker',this)">Checker Board</button>
+  <button class="type-btn" id="tb-uvgrid" onclick="setType('uvgrid',this)">UV Grid</button>
+  <button class="type-btn" id="tb-ramp" onclick="setType('ramp',this)">Color Ramp</button>
+  <button class="type-btn" id="tb-normal" onclick="setType('normal',this)">Normal Map Test</button>
+  <button class="type-btn" id="tb-mip" onclick="setType('mip',this)">Mip Level</button>
+  <button class="type-btn" id="tb-solid" onclick="setType('solid',this)">Solid Color</button>
+</div>
 
-    <h3>What makes a model too heavy?</h3>
-    <p>
-        High polygon count, large textures, and complex shaders can affect performance.
-    </p>
+<div class="tool-body">
+  <div class="controls-col" id="controlsCol"></div>
+  <div class="preview-col">
+    <canvas id="texCanvas" width="512" height="512"></canvas>
+    <div class="preview-info" id="previewInfo">512 × 512</div>
+  </div>
+</div>
 
-    <h3>How can I fix slow rendering?</h3>
-    <p>
-        Optimize geometry, reduce texture sizes, and simplify shaders.
-    </p>
+<div style="padding:12px 18px;background:var(--surface2);border-top:1px solid var(--border2);display:flex;gap:10px;align-items:center;">
+  <button class="btn-gen" id="genBtn" onclick="generate()">Generate Texture</button>
+  <button class="btn-dl" id="dlBtn" onclick="downloadTexture()">Download PNG</button>
+  <span id="genStatus" style="font-family:var(--mono);font-size:11px;color:var(--text-muted);"></span>
+</div>
 
-    <h3>Can I automate debugging?</h3>
-    <p>
-        Yes. Tools can automatically detect common issues in assets and pipelines.
-    </p>
-</section>
+
+  </div>
+
+  <hr class="divider">
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">Debug texture types</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="texture-types-grid">
+      <div class="tex-type-card">
+        <p class="ttc-name">Checker Board</p>
+        <p class="ttc-desc">Alternating black/white or color squares. Reveals UV tiling scale issues, seams, and incorrect UV unwrapping at a glance.</p>
+      </div>
+      <div class="tex-type-card">
+        <p class="ttc-name">UV Grid</p>
+        <p class="ttc-desc">Grid with numbered cells and directional indicators. Verifies UV layout, detects distortion, flipping, and UV island alignment.</p>
+      </div>
+      <div class="tex-type-card">
+        <p class="ttc-name">Color Ramp</p>
+        <p class="ttc-desc">Horizontal or vertical gradient. Verifies texture coordinate interpolation direction and checks for UV flipping.</p>
+      </div>
+      <div class="tex-type-card">
+        <p class="ttc-name">Normal Map Test</p>
+        <p class="ttc-desc">Pattern that tests tangent space normal map response. Reveals incorrect normal map settings (DirectX vs OpenGL), inverted channels.</p>
+      </div>
+      <div class="tex-type-card">
+        <p class="ttc-name">Mip Level Indicator</p>
+        <p class="ttc-desc">Different colors per mip level. Shows which mip level is being used at different viewing distances — diagnoses mip chain issues.</p>
+      </div>
+      <div class="tex-type-card">
+        <p class="ttc-name">Solid Color</p>
+        <p class="ttc-desc">Single flat color. Use for material slot isolation, render target debugging, or as a base for custom debug materials.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">How to use debug textures</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="dense-block">
+      <p><strong>Diagnosing UV issues with a checker board texture</strong><br>
+      Apply a checker board debug texture to your mesh. Uniform, square checks indicate correct UV mapping. Irregular checks (stretched, compressed, or skewed) indicate UV distortion at that region. Visible hard seams indicate UV island boundaries that need better placement. Broken or mirrored patterns indicate overlapping UVs or incorrect UV unwrap direction. The tile count on the debug texture should match your intended texture scale — if squares look too small, your UVs are too large relative to your intended texel density.</p>
+      <p><strong>Using UV Grid textures in Unity and Unreal Engine</strong><br>
+      Unity: Download the PNG, drag into Assets, create a Material, set Albedo texture, apply to mesh. Unreal Engine: Import PNG to Content Browser, create Material with Texture Sample node connected to Base Color, apply to mesh. In both engines, the UV Grid will immediately show numbered cells that let you identify specific UV islands and their orientation. A cell reading upside-down indicates a flipped UV island.</p>
+      <p><strong>Normal map direction testing</strong><br>
+      Apply the normal map test texture and view in a 3D engine with a directional light. If the normal map is responding incorrectly (flat-looking, reversed shadows), check: DirectX vs OpenGL normal map format (Unity HDRP uses DirectX, Blender exports OpenGL by default), Y channel inversion, and tangent space settings. The test pattern contains both concave and convex elements so you can immediately see if lighting responds correctly.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">FAQ — Debug textures</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is a debug texture?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">A debug texture is a test image applied to 3D meshes to diagnose UV mapping, tiling, and texture coordinate issues. A <strong>checker board</strong> reveals UV scale and seams. A <strong>UV grid</strong> shows UV island orientation and distortion. A <strong>color ramp</strong> verifies UV interpolation direction. Debug textures are used in Unity, Unreal Engine, Blender, Maya, Cinema 4D, and any 3D workflow where UV quality needs to be verified.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How do I use a debug texture in Unity?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">Generate and download the PNG from this tool. In Unity: (1) Drag the PNG into your Assets folder. (2) Create a new Material (Assets → Create → Material). (3) In the Material Inspector, set the Albedo texture to the debug texture PNG. (4) Apply the material to your mesh by dragging it onto the object. The checker or UV grid will immediately reveal UV issues. For Unreal: import the PNG, create a Material, add a Texture Sample node, connect to Base Color, assign texture, apply to mesh.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What size should a debug texture be?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">Use power-of-two sizes for GPU compatibility: 256×256, 512×512, 1024×1024, or 2048×2048. 512×512 is sufficient for most UV debugging — it provides enough detail to see distortion without being too large to load quickly. For high-detail UV inspection on large meshes, 1024×1024 or 2048×2048 gives more granularity. All sizes generated by this tool are power-of-two and compatible with all major 3D engines and GPU texture samplers.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Why does my checker board look stretched on my mesh?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">Stretched checker squares indicate UV distortion — the UV map does not correctly represent the 3D surface. Causes: (1) Non-uniform scaling applied to the mesh before UV unwrapping. Fix: Apply the transform (Ctrl+A in Blender) before unwrapping. (2) Incorrect projection method during unwrap. Use Smart UV Project or Manual seams for complex objects. (3) UV islands that were scaled non-uniformly. Select all UV islands in the UV editor and use uniform scale. (4) High-curvature areas that need additional seams to flatten correctly.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">3D debug tools</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="subtools-grid">
+      <a href="missing-textures-finder/" class="stl"><p class="stl-eye">textures //</p><span class="stl-name">Missing Textures Finder</span></a>
+      <a href="texture-not-loading-debugger/" class="stl"><p class="stl-eye">debug //</p><span class="stl-name">Texture Not Loading Debugger</span></a>
+      <a href="broken-mesh-detector/" class="stl"><p class="stl-eye">mesh //</p><span class="stl-name">Broken Mesh Detector</span></a>
+      <a href="model-heavy-analyzer/" class="stl"><p class="stl-eye">perf //</p><span class="stl-name">Model Heavy Analyzer</span></a>
+      <a href="render-slow-checker/" class="stl"><p class="stl-eye">render //</p><span class="stl-name">Render Slow Checker</span></a>
+    </div>
+  </section>
+
+  <div class="tag-cloud">
+    <span class="tag">debug texture</span>
+    <span class="tag">uv debug texture</span>
+    <span class="tag">checker board texture</span>
+    <span class="tag">uv grid texture</span>
+    <span class="tag">debug texture unity</span>
+    <span class="tag">debug texture unreal</span>
+    <span class="tag">uv checker texture generator</span>
+    <span class="tag">normal map test texture</span>
+    <span class="tag">mip map debug texture</span>
+    <span class="tag">3d debug texture free</span>
+  </div>
+
+</div>
 
 <footer>
-    <p>
-        Fix rendering and asset issues with advanced <strong>3D debugging tools</strong>
-        for better performance and stability.
-    </p>
+  <div class="footer-inner">
+    <p>debug-texture-generator &middot; uv grid &middot; checker board &middot; free</p>
+    <p>unity &middot; unreal &middot; blender &middot; png export &middot; github pages</p>
+  </div>
 </footer>
+
+<script>
+var currentType = 'checker';
+var canvas = null;
+var ctx = null;
+
+var STATE = {
+  size: 512,
+  tiles: 8,
+  color1: '#ffffff',
+  color2: '#000000',
+  rampDir: 'h',
+  rampC1: '#ff0000',
+  rampC2: '#0000ff',
+  solidColor: '#ff00ff'
+};
+
+function setType(type, btn) {
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  buildControls();
+  generate();
+}
+
+function buildControls() {
+  var col = document.getElementById('controlsCol');
+  col.innerHTML = '';
+
+  function makeField(lbl, inner) {
+    var g = document.createElement('div'); g.className = 'ctrl-group';
+    var l = document.createElement('div'); l.className = 'ctrl-label'; l.textContent = lbl;
+    g.appendChild(l); g.appendChild(inner);
+    col.appendChild(g);
+  }
+
+  // Size selector
+  var sizeEl = document.createElement('select'); sizeEl.className = 'tex-select'; sizeEl.id = 'ctrlSize';
+  [128, 256, 512, 1024, 2048].forEach(function(s) {
+    var opt = document.createElement('option');
+    opt.value = String(s);
+    opt.textContent = s + ' x ' + s;
+    if (s === STATE.size) opt.selected = true;
+    sizeEl.appendChild(opt);
+  });
+  sizeEl.onchange = function() { STATE.size = parseInt(this.value); generate(); };
+  makeField('Texture size', sizeEl);
+
+  if (currentType === 'checker') {
+    var tilesEl = document.createElement('div');
+    var slider = document.createElement('input');
+    slider.type = 'range'; slider.className = 'tex-slider';
+    slider.min = '2'; slider.max = '32'; slider.value = String(STATE.tiles);
+    var valSpan = document.createElement('span');
+    valSpan.style.fontFamily = 'var(--mono)'; valSpan.style.fontSize = '11px';
+    valSpan.style.color = 'var(--tex)'; valSpan.style.marginLeft = '8px';
+    valSpan.textContent = STATE.tiles + 'x' + STATE.tiles;
+    slider.oninput = function() { STATE.tiles = parseInt(this.value); valSpan.textContent = STATE.tiles + 'x' + STATE.tiles; generate(); };
+    tilesEl.appendChild(slider); tilesEl.appendChild(valSpan);
+    makeField('Tile count', tilesEl);
+
+    var colorPair = document.createElement('div'); colorPair.className = 'color-pair';
+    var c1 = document.createElement('input'); c1.type = 'color'; c1.value = STATE.color1;
+    var c2 = document.createElement('input'); c2.type = 'color'; c2.value = STATE.color2;
+    c1.oninput = function() { STATE.color1 = this.value; generate(); };
+    c2.oninput = function() { STATE.color2 = this.value; generate(); };
+    var lbl1 = document.createElement('span');
+    lbl1.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--text-muted);align-self:center;';
+    lbl1.textContent = 'Color A';
+    var lbl2 = document.createElement('span');
+    lbl2.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--text-muted);align-self:center;margin-left:6px;';
+    lbl2.textContent = 'Color B';
+    colorPair.appendChild(c1); colorPair.appendChild(lbl1);
+    colorPair.appendChild(c2); colorPair.appendChild(lbl2);
+    makeField('Colors', colorPair);
+  }
+
+  if (currentType === 'ramp') {
+    var dirEl = document.createElement('select'); dirEl.className = 'tex-select';
+    ['h', 'v', 'radial'].forEach(function(d) {
+      var o = document.createElement('option'); o.value = d;
+      o.textContent = d === 'h' ? 'Horizontal' : d === 'v' ? 'Vertical' : 'Radial';
+      if (d === STATE.rampDir) o.selected = true;
+      dirEl.appendChild(o);
+    });
+    dirEl.onchange = function() { STATE.rampDir = this.value; generate(); };
+    makeField('Direction', dirEl);
+
+    var cp2 = document.createElement('div'); cp2.className = 'color-pair';
+    var rc1 = document.createElement('input'); rc1.type = 'color'; rc1.value = STATE.rampC1;
+    var rc2 = document.createElement('input'); rc2.type = 'color'; rc2.value = STATE.rampC2;
+    rc1.oninput = function() { STATE.rampC1 = this.value; generate(); };
+    rc2.oninput = function() { STATE.rampC2 = this.value; generate(); };
+    cp2.appendChild(rc1); cp2.appendChild(rc2);
+    makeField('Start / End color', cp2);
+  }
+
+  if (currentType === 'solid') {
+    var sc = document.createElement('input'); sc.type = 'color'; sc.value = STATE.solidColor;
+    sc.oninput = function() { STATE.solidColor = this.value; generate(); };
+    makeField('Color', sc);
+  }
+
+  // Generate and download buttons
+  var genBtn = document.createElement('button'); genBtn.className = 'btn-gen'; genBtn.textContent = 'Generate Texture';
+  genBtn.onclick = generate;
+  col.appendChild(genBtn);
+
+  var dlBtn = document.createElement('button'); dlBtn.className = 'btn-dl'; dlBtn.textContent = 'Download PNG';
+  dlBtn.onclick = downloadTexture;
+  col.appendChild(dlBtn);
+}
+
+function hexToRgb(hex) {
+  var r = parseInt(hex.slice(1, 3), 16);
+  var g = parseInt(hex.slice(3, 5), 16);
+  var b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+}
+
+function generate() {
+  if (!canvas) {
+    canvas = document.getElementById('texCanvas');
+    ctx = canvas.getContext('2d');
+  }
+
+  var sz = STATE.size;
+  canvas.width = sz;
+  canvas.height = sz;
+  document.getElementById('previewInfo').textContent = sz + ' x ' + sz;
+
+  if (currentType === 'checker') {
+    var tileSize = sz / STATE.tiles;
+    for (var y = 0; y < STATE.tiles; y++) {
+      for (var x = 0; x < STATE.tiles; x++) {
+        ctx.fillStyle = (x + y) % 2 === 0 ? STATE.color1 : STATE.color2;
+        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+      }
+    }
+  } else if (currentType === 'uvgrid') {
+    // Background
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, sz, sz);
+    var cells = 8;
+    var cellSz = sz / cells;
+    var colors = ['#e63946','#f4a261','#2a9d8f','#457b9d','#e9c46a','#264653','#a8dadc','#f1faee'];
+    for (var cy = 0; cy < cells; cy++) {
+      for (var cx = 0; cx < cells; cx++) {
+        var cidx = (cx + cy * cells) % colors.length;
+        ctx.fillStyle = colors[cidx];
+        ctx.globalAlpha = 0.18;
+        ctx.fillRect(cx * cellSz + 2, cy * cellSz + 2, cellSz - 4, cellSz - 4);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = '#ffffff44';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(cx * cellSz + 0.5, cy * cellSz + 0.5, cellSz - 1, cellSz - 1);
+        ctx.fillStyle = '#ffffffcc';
+        ctx.font = Math.floor(cellSz * 0.28) + 'px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(cy * cells + cx + 1), cx * cellSz + cellSz / 2, cy * cellSz + cellSz / 2);
+      }
+    }
+    // Border
+    ctx.strokeStyle = '#ffffffaa';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, sz - 2, sz - 2);
+    // U/V labels
+    ctx.fillStyle = '#fff';
+    ctx.font = Math.floor(sz * 0.035) + 'px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('U  \u2192', sz / 2, sz - 8);
+    ctx.save();
+    ctx.translate(8, sz / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('V  \u2192', 0, 0);
+    ctx.restore();
+  } else if (currentType === 'ramp') {
+    var grad;
+    if (STATE.rampDir === 'h') {
+      grad = ctx.createLinearGradient(0, 0, sz, 0);
+    } else if (STATE.rampDir === 'v') {
+      grad = ctx.createLinearGradient(0, 0, 0, sz);
+    } else {
+      grad = ctx.createRadialGradient(sz/2, sz/2, 0, sz/2, sz/2, sz/2);
+    }
+    grad.addColorStop(0, STATE.rampC1);
+    grad.addColorStop(1, STATE.rampC2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, sz, sz);
+  } else if (currentType === 'normal') {
+    // Tangent space normal map test — flat blue base with grid bumps
+    var id = ctx.createImageData(sz, sz);
+    var d = id.data;
+    var half = sz / 2;
+    for (var py = 0; py < sz; py++) {
+      for (var px = 0; px < sz; px++) {
+        var tx = (px / sz) * 2 - 1;
+        var ty = (py / sz) * 2 - 1;
+        var wave = Math.sin(tx * Math.PI * 8) * Math.cos(ty * Math.PI * 8) * 0.5;
+        var nx = tx * 0.15 + Math.sin(py / sz * Math.PI * 8) * 0.15;
+        var ny = ty * 0.15 + Math.cos(px / sz * Math.PI * 8) * 0.15;
+        var nz = Math.sqrt(Math.max(0, 1 - nx*nx - ny*ny));
+        var idx = (py * sz + px) * 4;
+        d[idx]   = Math.round((nx * 0.5 + 0.5) * 255);
+        d[idx+1] = Math.round((ny * 0.5 + 0.5) * 255);
+        d[idx+2] = Math.round(nz * 255);
+        d[idx+3] = 255;
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+  } else if (currentType === 'mip') {
+    var mipColors = ['#e63946','#f4a261','#2a9d8f','#457b9d','#e9c46a','#264653','#a8dadc','#f1faee'];
+    var mipLevels = Math.log2(sz);
+    var offset = 0;
+    for (var m = 0; m < mipLevels; m++) {
+      var mipW = sz >> m;
+      if (mipW < 1) break;
+      ctx.fillStyle = mipColors[m % mipColors.length];
+      ctx.fillRect(offset, 0, mipW, sz);
+      ctx.fillStyle = '#ffffff80';
+      ctx.font = Math.max(8, mipW * 0.2) + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('MIP ' + m, offset + mipW / 2, sz / 2);
+      offset += mipW;
+    }
+  } else if (currentType === 'solid') {
+    ctx.fillStyle = STATE.solidColor;
+    ctx.fillRect(0, 0, sz, sz);
+  }
+
+  document.getElementById('genStatus').textContent = 'Generated ' + sz + 'x' + sz + ' ' + currentType + ' texture.';
+}
+
+function downloadTexture() {
+  if (!canvas) return;
+  var link = document.createElement('a');
+  link.download = 'debug-texture-' + currentType + '-' + STATE.size + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function toggleFaq(btn) {
+  btn.parentElement.classList.toggle('open');
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  canvas = document.getElementById('texCanvas');
+  ctx = canvas.getContext('2d');
+  buildControls();
+  generate();
+});
+</script>
 
 </body>
 </html>
